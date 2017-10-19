@@ -4,19 +4,25 @@ from sklearn.datasets import make_blobs
 
 class PlanarDataGenerator:
 
-    def make_planar(self):
+    def __init__(self):
         self.mean = (0.25, 0.75)
         self.cov = [[0.15, 0], [0, 0.15]]
         self.size = 200
+        self.clsA = np.zeros((200, 1))
+        self.clsB = np.ones((200, 1))
+
+    def make_planar(self):
         X = np.random.multivariate_normal(self.mean, self.cov, self.size).reshape(-1, 1)
-        y =
+        y = np.concatenate((self.clsA, self.clsB), axis=1)
         # x, y = make_blobs(n_samples=400, n_features=1, cluster_std=0.15, centers=[(0.25,), (0.75,)])
 
         theta = X * np.pi * 2
         r = np.sin(4 * theta)
 
-        x1 = r[:, 0] * np.cos(theta[:, 0])
-        x2 = r[:, 1] * np.sin(theta[:, 1])
+        X = r * np.cos(theta)
+
+        # x1 = r[:, 0] * np.cos(theta[:, 0])
+        # x2 = r[:, 1] * np.sin(theta[:, 1])
 
         # X = np.concatenate((x1, x2), axis=1).reshape(2, -1)
 
