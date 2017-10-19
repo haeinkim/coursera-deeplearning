@@ -9,12 +9,12 @@ class SingleLayerNet:
     which is referred from the assignment "Planar data classification
     with one hidden layer
     """
-    def __init__(self, X, hidden_size, Y, weight_init_std=0.01):
+    def __init__(self, X, hidden_size, y, weight_init_std=0.01):
         """Define the structure and
         initialize the parameters of the two layer neural network"""
         self.n_x = X.shape[0]
         self.n_h = hidden_size
-        self.n_y = Y.shape[0]
+        self.n_y = y.shape[0]
 
         self.parameters = {}
         self.parameters["W1"] = np.random.randn(self.n_x, self.n_h) \
@@ -42,7 +42,7 @@ class SingleLayerNet:
 
         return A2, cache
 
-    def backward_propagation(self, parameters, cache, X, Y):
+    def backward_propagation(self, parameters, cache, X, y):
         m = X.shape[1]
 
         W1 = parameters["W1"]
@@ -51,7 +51,7 @@ class SingleLayerNet:
         A1 = cache["A1"]
         A2 = cache["A2"]
 
-        dZ2 = A2 - Y
+        dZ2 = A2 - y
         dW2 = (1/m) * np.dot(dZ2, A1.T)
         db2 = (1/m) * np.dot(dZ2, axis=1, keepdims=True)
         dZ1 = np.dot(W2.T, dZ2) * (1-np.power(A1, 2))
