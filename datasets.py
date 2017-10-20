@@ -1,40 +1,37 @@
 import numpy as np
-from sklearn.datasets import make_blobs
 
 
 class PlanarDataGenerator:
+    def __init__(self, n_labels=2, n_features=2, n_petals=4, mean=(0.25, 0.75),
+                 scale=0.15, size=200):
 
-    def __init__(self,
-                 mean=(0.25, 0.75),
-                 cov = [[0.15, 0], [0, 0.15]],
-                 size = 400):
+        self.n_labels = n_labels
+        self.n_features = n_features
+        self.n_petals = n_petals
         self.mean = mean
-        self.cov = cov
+        self.scale = scale
         self.size = size
-        self.clsA = np.zeros((200, 1))
-        self.clsB = np.ones((200, 1))
+        self.planar = np.empty([n_features, n_labels * size])
+        self.label = np.c_[np.zeros((1, self.size)), np.ones((1, self.size))]
 
     def make_planar(self):
-        X = np.random.multivariate_normal(self.mean, self.cov, self.size).reshape(-1, 2)
-        y = np.concatenate((self.clsA, self.clsB), axis=0).reshape(-1, 1)
-        # x, y = make_blobs(n_samples=400, n_features=1, cluster_std=0.15, centers=[(0.25,), (0.75,)])
+        for feature in range(self.n_features):
+            z = np.random.normal(loc=self.mean[feature],
+                                 scale=self.scale,
+                                 size=self.size).reshape(1, -1)
 
-        theta = X * np.pi * 2
-        r = np.sin(4 * theta)
+            theta = z * np.pi * 2
+            r = np.sin(self.n_petals * theta)
 
-        X = r * np.cos(theta)
+            x = r * np.cos(theta)
+            y = r * np.sin(theta)
 
-        # x1 = r[:, 0] * np.cos(theta[:, 0])
-        # x2 = r[:, 1] * np.sin(theta[:, 1])
+            self.planar[:, int(feature * self.size):
+                           int(self.size + feature * self.size)] = np.r_[x, y]
 
-        # X = np.concatenate((x1, x2), axis=1).reshape(2, -1)
+        print(self.planar.shape)
+        print(self.label.shape)
 
-        print("The rose bloomed!")
-        return X, y
+        print("The flower bloomed!")
 
-    # def show_plot(self):
-    #     # plt.subplot(121)
-    #     # plt.scatter(th, r, c=y)
-    #     # plt.subplot(122)
-    #     # plt.scatter(x1, x2, c=y)
-    #     # plt.show()
+        return self.planar, self.label
